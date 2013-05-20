@@ -15,8 +15,8 @@ var assets;
 	queue.addEventListener("complete", handleComplete);
 	queue.loadManifest([
 		{id: "houseInterior", src: "http://i.imgur.com/CZpVvJI.png"},
-		{id: "mapJson", src: "assets/map.json"},
-		{id: "mapJson2", src: "assets/map2.json"}
+		{id: "mapJson", src: "map.json"},
+		{id: "mapJson2", src: "map2.json"}
 		]);
 
 	// adding each asset to an array to be used later
@@ -24,7 +24,6 @@ var assets;
     	assets[event.item.id] = event.result;
 	}
 	function handleComplete(event) {
-		//note:
 		loadMap(assets["houseInterior"], assets["mapJson2"], stage);
 		stage.update();
 	}
