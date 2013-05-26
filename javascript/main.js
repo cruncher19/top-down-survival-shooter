@@ -14,6 +14,16 @@ var left = 37;
 var right = 39;
 var space = 32;
 
+var keyCodes = [];
+keyCodes['38'] = 'up';
+keyCodes['40'] = 'down';
+keyCodes['37'] = 'left';
+keyCodes['39'] = 'right';
+keyCodes['32'] = 'space';
+
+var wallID = [];
+
+
 var pressedKeys;
 
 (function init() {
@@ -71,14 +81,12 @@ var pressedKeys;
 				left: [15, 19]
 			}
 		});
-		player = new createjs.BitmapAnimation(playerSprite);
-		player.x = 100;
-		player.y = 100;
-		player.scaleX = player.scaleY = 0.8;
-		player.gotoAndStop(0);
-		player.frameCount = 0;
-		player.walk = false;
-		stage.addChild(player);
+		var temp = new createjs.BitmapAnimation(playerSprite);
+		temp.scaleX = temp.scaleY = 0.8;
+		temp.gotoAndStop(0);
+		stage.addChild(temp);
+		player = new Player( playerSpeed, temp, 5, 60 );
+		player.setPos({x: 100, y: 100});
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', handleTick);
     	window.addEventListener('keydown', handleKeyDown);
@@ -89,37 +97,30 @@ var pressedKeys;
 function handleTick(event){
 	if( player.walk ) {
 		if( pressedKeys.length == 0 ) {
-			player.gotoAndStop(player.currentAnimation);
-			player.frameCount = 0;
-		}
-	    pressedKeys.forEach(function( element, index, array ) {
-	        switch(element) {
-	            case up:
-	                player.y += -1 * ( event.delta/1000 * playerSpeed );
-	                if( player.currentAnimation != 'up' )
-	                	player.gotoAndStop('up');
-	                break;
-	            case down:
-	                player.y += event.delta/1000 * playerSpeed;
-	                if( player.currentAnimation != 'down')             
-	                	player.gotoAndStop('down');
-	                break;
-	            case left:
-	                player.x += -1 * ( event.delta/1000 * playerSpeed );
-	                if( player.currentAnimation != 'left')
-	                	player.gotoAndStop('left');
-	                break;
-	            case right:
-	                player.x += event.delta/1000 * playerSpeed;
-	                if( player.currentAnimation != 'right')
-	                	player.gotoAndStop('right');
-	                break;
-	        }
-	    });
-    	updateFrames();
+			player.stopWalking();
+		} else {
+		    pressedKeys.forEach(function( element, index, array ) {
+		        switch(element) {
+		            case up:
+		                player.moveUp(event.delta);
+		                break;
+		            case down:
+		                player.moveDown(event.delta);
+		                break;
+		            case left:
+		                player.moveLeft(event.delta);
+		                break;
+		            case right:
+		                player.moveRight(event.delta);
+		                break;
+		        }
+		    });
+		    player.setCurrentAnim(keyCodes[pressedKeys[pressedKeys.length - 1].toString()]);
+	    	player.updateFrames();
+    	}
 	} else {
 		if( pressedKeys.length > 0 )
-			player.walk = true;
+			player.startWalking();
 	}
     stage.update();
 }
