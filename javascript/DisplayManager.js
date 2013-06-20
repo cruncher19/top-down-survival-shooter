@@ -6,6 +6,9 @@
 //	collisionQuadTree
 //		*the collisionQuadTree will not be implemented initially, undecided as to how to move forward with hit detection
 
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISPLAY MANAGER START>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 // DisplayManager constructor
 function DisplayManager() {
 	this.displayItems = [];
@@ -20,23 +23,43 @@ function DisplayManager() {
 //	height
 //	updateFrames
 // BitmapAnimation doesn't contain width and height, but this method knows how to handle BitmapAnimations
-DisplayManager.prototype.addDisplayItem = function( displayItem ) {
+DisplayManager.prototype.addDisplayItem = function( displayItem, itemId ) {
 	if( displayItem.hasOwnProperty('x') && displayItem.hasOwnProperty('y') &&
 		displayItem.hasOwnProperty('width') && displayItem.hasOwnProperty('height') ){
-		this.displayItems.push( displayItem );
-		this.collisionItems.push( new physicalElement( displayItem.x, displayItem.y, displayItem.width, displayItem.height);
+		this.displayItems[itemId] = displayItem;
+		this.collisionItems[itemId] = new physicalElement( displayItem.x, displayItem.y, displayItem.width, displayItem.height);
 	}
 	else if( typeof displayItem.getBounds === 'function' ) {
 			rect = displayItem.getBounds();
 			this.displayItems.push( displayItem );
-			this.collisionItems.push( new physicalElement( rect.x, rect.y, rect.width, rect.height );
+			this.collisionItems.push( new physicalElement( rect.x, rect.y, rect.width, rect.height ) );
 	}
 	else {
 		throw "DisplayManager.addDisplayItem() called on an invalid object";
 	}
 }
+DisplayManager.prototype.updateFrames = function(){
+	for( key in this.displayItems )
+		this.displayItems[key].updateFrames();
+}
+DisplayManager.prototype.removeDisplayItem = function(itemId){
+	delete this.displayItems[itemId];
+}
+// sets itemId's x and y coordinates and returns the previous coordinates
+DisplayManager.prototype.setItemPos = function( itemId, x, y){
+	tempX = this.displayItems[itemId].x;
+	tempY = this.displayItems[itemId].y;
+	this.displayItems[itemId].x = x;
+	this.displayItems[itemId].y = y;
+	this.collisionItems[itemId].x = x;
+	this.collisionItems[itemId].y = y;
+
+	return {x: tempX, y: tempY};
+}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISPLAY MANAGER END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<INTERNAL METHODS AND OBJECTS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // an object used by DisplayManager to manage collision detection
 // NOTE: may be replaced by quadtree as development progresses
