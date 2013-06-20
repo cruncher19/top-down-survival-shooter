@@ -44,6 +44,7 @@ DisplayManager.prototype.updateFrames = function(){
 }
 DisplayManager.prototype.removeDisplayItem = function(itemId){
 	delete this.displayItems[itemId];
+	delete this.collisionItems[itemId];
 }
 // sets itemId's x and y coordinates and returns the previous coordinates
 DisplayManager.prototype.setItemPos = function( itemId, x, y){
