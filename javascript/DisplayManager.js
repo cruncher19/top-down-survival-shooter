@@ -23,39 +23,47 @@ function DisplayManager() {
 //	height
 //	updateFrames
 // BitmapAnimation doesn't contain width and height, but this method knows how to handle BitmapAnimations
-DisplayManager.prototype.addDisplayItem = function( displayItem, itemId ) {
+DisplayManager.prototype.addItem = function( displayItem, itemId ) {
 	if( displayItem.hasOwnProperty('x') && displayItem.hasOwnProperty('y') &&
 		displayItem.hasOwnProperty('width') && displayItem.hasOwnProperty('height') ){
 		this.displayItems[itemId] = displayItem;
 		this.collisionItems[itemId] = new physicalElement( displayItem.x, displayItem.y, displayItem.width, displayItem.height);
 	}
 	else if( typeof displayItem.getBounds === 'function' ) {
-			rect = displayItem.getBounds();
+			var rect = displayItem.getBounds();
 			this.displayItems.push( displayItem );
 			this.collisionItems.push( new physicalElement( rect.x, rect.y, rect.width, rect.height ) );
 	}
 	else {
-		throw "DisplayManager.addDisplayItem() called on an invalid object";
+		throw "DisplayManager.addItem() called on an invalid object";
 	}
 }
 DisplayManager.prototype.updateFrames = function(){
 	for( key in this.displayItems )
 		this.displayItems[key].updateFrames();
 }
-DisplayManager.prototype.removeDisplayItem = function(itemId){
+DisplayManager.prototype.removeItem = function(itemId){
 	delete this.displayItems[itemId];
 	delete this.collisionItems[itemId];
 }
 // sets itemId's x and y coordinates and returns the previous coordinates
 DisplayManager.prototype.setItemPos = function( itemId, x, y){
-	tempX = this.displayItems[itemId].x;
-	tempY = this.displayItems[itemId].y;
+	var tempX = this.displayItems[itemId].x;
+	var tempY = this.displayItems[itemId].y;
 	this.displayItems[itemId].x = x;
 	this.displayItems[itemId].y = y;
 	this.collisionItems[itemId].x = x;
 	this.collisionItems[itemId].y = y;
 
 	return {x: tempX, y: tempY};
+}
+// NOTE: this is mainly used for testing
+//	 function uses the built in toString function of all objects in the display manager
+DisplayManager.prototype.toString = function() {
+	var returnVal = "";
+	for( key in this.displayItems )
+		returnVal += this.displayItems[key].toString() + "<br>";
+	return returnVal;
 }
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISPLAY MANAGER END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -73,10 +81,10 @@ function physicalElement( x, y, width, height) {
 }
 // a method used to test if a given point intersects with the physicalElement
 physicalElement.prototype.testPointCollision = function( x, y ) {
-	leftBound = this.x;
-	rightBound = this.x + this.width;
-	topBound = this.y;
-	bottomBound = this.y + this.height;
+	var leftBound = this.x;
+	var rightBound = this.x + this.width;
+	var topBound = this.y;
+	var bottomBound = this.y + this.height;
 
 	if( x < leftBound )
 		return false;
@@ -90,10 +98,10 @@ physicalElement.prototype.testPointCollision = function( x, y ) {
 		return true;
 }
 physicalElement.prototype.testBoxCollision = function( x, y, width, height ) {
-	p1 = [ { x: this.x, y: this.y },
+	var p1 = [ { x: this.x, y: this.y },
 		{ x: x, y: y }
 		];
-	p2 = [ { x: (this.x + this.width), y: (this.y + this.height) },
+	var p2 = [ { x: (this.x + this.width), y: (this.y + this.height) },
 		{ x: (x + width), y: (y + height)}
 		];
 
