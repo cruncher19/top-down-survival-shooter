@@ -12,50 +12,30 @@
 // DisplayManager constructor
 function DisplayManager() {
 	this.displayItems = [];
-	this.collisionItems = [];
 }
 
 // add a display item to the array of display items
 // display item must have the following properties:
 //	X
-//	y
-//	width
-//	height
+//	Y
 //	updateFrames
 // BitmapAnimation doesn't contain width and height, but this method knows how to handle BitmapAnimations
 DisplayManager.prototype.addItem = function( displayItem, itemId ) {
-	if( displayItem.hasOwnProperty('x') && displayItem.hasOwnProperty('y') &&
-		displayItem.hasOwnProperty('width') && displayItem.hasOwnProperty('height') ){
-		this.displayItems[itemId] = displayItem;
-		this.collisionItems[itemId] = new physicalElement( displayItem.x, displayItem.y, displayItem.width, displayItem.height);
-	}
-	else if( typeof displayItem.getBounds === 'function' ) {
-			var rect = displayItem.getBounds();
-			this.displayItems.push( displayItem );
-			this.collisionItems.push( new physicalElement( rect.x, rect.y, rect.width, rect.height ) );
-	}
-	else {
-		throw "DisplayManager.addItem() called on an invalid object";
-	}
+	this.displayItems[itemId] = displayItem;
+	console.log( displayItem);
+	return displayItem;
 }
 DisplayManager.prototype.updateFrames = function(){
 	for( key in this.displayItems )
-		this.displayItems[key].updateFrames();
+		if( this.displayItems[key].isAniamted )
+			this.displayItems[key].updateFrames();
 }
 DisplayManager.prototype.removeItem = function(itemId){
 	delete this.displayItems[itemId];
-	delete this.collisionItems[itemId];
 }
 // sets itemId's x and y coordinates and returns the previous coordinates
 DisplayManager.prototype.setItemPos = function( itemId, x, y){
-	var tempX = this.displayItems[itemId].x;
-	var tempY = this.displayItems[itemId].y;
-	this.displayItems[itemId].x = x;
-	this.displayItems[itemId].y = y;
-	this.collisionItems[itemId].x = x;
-	this.collisionItems[itemId].y = y;
-
-	return {x: tempX, y: tempY};
+	this.displayItems[itemId].setPos( x, y );
 }
 // NOTE: this is mainly used for testing
 //	 function uses the built in toString function of all objects in the display manager

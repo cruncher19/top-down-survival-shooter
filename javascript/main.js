@@ -31,6 +31,7 @@ var pressedKeys;
 	stage = new createjs.Stage(canvas);
 	assets = [];
 	pressedKeys = [];
+	dm = new DisplayManager();
 
 	//loading assets
 	var queue = new createjs.LoadQueue(false);
@@ -85,8 +86,8 @@ var pressedKeys;
 		temp.scaleX = temp.scaleY = 0.8;
 		temp.gotoAndStop(0);
 		stage.addChild(temp);
-		player = new Player( playerSpeed, temp, 5, 60 );
-		player.setPos({x: 100, y: 100});
+		player = dm.addItem( new Player( playerSpeed, temp, 5, 60 ), 'player' );
+		dm.setItemPos( 'player', 100, 100 );
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', handleTick);
     	window.addEventListener('keydown', handleKeyDown);
