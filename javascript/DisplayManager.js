@@ -58,6 +58,55 @@ DisplayManager.prototype.toString = function() {
 		returnVal += this.displayItems[key].toString() + "<br>";
 	return returnVal;
 }
+
+// methods for moving items around, uses the time delta and movement speed to move smoothly regardless of framerate
+// these methods check for collisions
+DisplayManager.prototype.moveItemUp = function( itemId, delta ) {
+	var item = this.collisionItems[itemId];
+	var itemRect = item.getBounds();
+	var newPos = item.bmp.y - (delta/1000 * item.moveSpeed);
+	var colliding = false;
+	for( key in this.collisionItems ) {
+		if( key.testBoxCollision( itemRect.x, newPos, itemRect.width, itemRect.height ) 
+			colliding = true;
+	}
+	if( !colliding )
+		item.bmp.y = newPos;
+}
+DisplayManager.prototype.moveItemDown = function( itemId, delta) {
+	var item = this.collisionItems[itemId];
+	var itemRect = item.getBounds();
+	var newPos = item.bmp.y + (delta/1000 * item.moveSpeed);
+	var colliding = false;
+	for( key in this.collisionItems ) {
+		if( key.testBoxCollision( itemRect.x, newPos, itemRect.width, itemRect.height ) 
+			colliding = true;
+	}
+	if( !colliding )
+		item.bmp.y = newPos;
+}
+DisplayManager.prototype.moveItemLeft = function( itemId, delta) {
+	var item = this.collisionItems[itemId];
+	var itemRect = item.getBounds();
+	var newPos = item.bmp.x - (delta/1000 * item.moveSpeed);
+	var colliding = false;
+	for( key in this.collisionItems ) {
+		if( key.testBoxCollision( newPos, itemRect.y, itemRect.width, itemRect.height )
+			colliding = true;
+	if( !colliding )
+		item.bmp.x = newPos;
+}
+DisplayManager.prototype.moveItemRight = function( itemId, delta) {
+	var item = this.collisionItems[itemId];
+	var itemRect = item.getBounds();
+	var newPos = item.bmp.x + (delta/1000 * item.moveSpeed);
+	var colliding = false;
+	for( key in this.collisionItems ) {
+		if( key.testBoxCollision( newPos, itemRect.y, itemRect.width, itemRect.height )
+			colliding = true;
+	if( !colliding )
+		item.bmp.x = newPos;
+}
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISPLAY MANAGER END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
