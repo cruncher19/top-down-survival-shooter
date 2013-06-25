@@ -117,20 +117,13 @@ function handleTick(event){
 		        }
 		    });
 		    player.setCurrentAnim(keyCodes[pressedKeys[pressedKeys.length - 1].toString()]);
-	    	player.updateFrames();
+	    	dm.updateFrames();
     	}
 	} else {
 		if( pressedKeys.length > 0 )
 			player.startWalking();
 	}
     stage.update();
-}
-function updateFrames(){
-	player.frameCount += 1;
-	if(player.frameCount >= 12) {
-		player.advance();
-		player.frameCount = 0;
-	}
 }
 function handleKeyDown(event){
     if(pressedKeys.indexOf(event.which) === -1)

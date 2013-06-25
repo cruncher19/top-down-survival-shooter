@@ -12,6 +12,8 @@
 // DisplayManager constructor
 function DisplayManager() {
 	this.displayItems = [];
+	this.collisionItems = [];
+	this.animatedItems = [];
 }
 
 // add a display item to the array of display items
@@ -22,16 +24,27 @@ function DisplayManager() {
 // BitmapAnimation doesn't contain width and height, but this method knows how to handle BitmapAnimations
 DisplayManager.prototype.addItem = function( displayItem, itemId ) {
 	this.displayItems[itemId] = displayItem;
-	console.log( displayItem);
+	if( displayItem.canCollide )
+		this.collisionItems[itemId] = displayItem;
+	if( displayItem.isAnimated )
+		this.animatedItems[itemId] = displayItem;
 	return displayItem;
 }
+DisplayManager.prototype.getItem = function( itemId ) {
+	return this.displayItems[itemId];
+}
+// method for use with collision detection
+// will only search for the item in the site of items that are affected by collisions
+DisplayManager.prototype.getCollisionItem = function( itemId ) {
+	return this.collisionItems[itemId];
+}
 DisplayManager.prototype.updateFrames = function(){
-	for( key in this.displayItems )
-		if( this.displayItems[key].isAniamted )
-			this.displayItems[key].updateFrames();
+	for( key in this.animatedItems )
+		this.animatedItems[key].updateFrames();
 }
 DisplayManager.prototype.removeItem = function(itemId){
 	delete this.displayItems[itemId];
+	delete this.collisionItems[itemId];
 }
 // sets itemId's x and y coordinates and returns the previous coordinates
 DisplayManager.prototype.setItemPos = function( itemId, x, y){
