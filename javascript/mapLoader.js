@@ -1,47 +1,50 @@
-// this is a utility for loading maps from json format
-// it accepts tileset as an image, mapdata as a json object, and the stage it will draw the tiles to
-// loadMap will return an array containing all of the tiles
-function loadMap( tileset, mapData, stage ) {
-	var bitmapTiles = [];
-	initLayers();
-	return bitmapTiles;
+function loadMap( mapData, displayManager, stage ) {
 
-	// loading layers
+
+	//load layer assets, init layers
 	function initLayers() {
-		// compose EaselJS tileset from image (fixed 32x32 now, but can be parametized)
-		var imageData = {
-			images : [ tileset ],
-			frames : {
-				width : mapData.tilewidth,
-				height : mapData.tileheight
-			}
-		};
-		// create spritesheet
-		var tilesetSheet = new createjs.SpriteSheet(imageData);
-		
-		// loading each layer at a time
-		for (var idx = 0; idx < mapData.layers.length; idx++) {
-			var layerData = mapData.layers[idx];
-			initLayer(layerData, tilesetSheet, mapData.tilewidth, mapData.tileheight);
+		var spriteSheets = [];
+		var assets = [];
+		var tileSize = {width: mapData.tilewidth, height: mapData.tileheight};
+
+		//loading assets
+		//setup loadQueue
+		var loadQueue = new createjs.LoadQueue(false);
+		loadQueue.addEventListener("fileload", handleFileLoad);
+		loadQueue.addEventListener("complete", handleComplete);
+
+		//create loadManifest from map file
+		var manifest = [];
+		var complete = false;
+		for( var x = 0; x < mapData.tilesets.length; x++) 
+			manifest.push( {id: mapData.tilesets[x].name, src: ( "assets/" + mapData.tilesets[x].image )} );
+		loadQueue.loadManifest([manifest);
+		while( !complete ){}
+		return spriteSheets;
+
+		// adding each asset to an array to be used later
+		function handleFileLoad(event) {
+	    	assets[event.item.id] = event.result;
+		}
+		// what to do after files are loaded
+		function handleComplete(event) {
+			for( var x = 0; x < assets.length; x++ ){
+				spriteSheets[x] = new createjs.SpriteSheet({
+					images : [ assets[x] ],
+					frames : tileSize
+				});
+
+				spriteSheets[x].layer = mapData.layers[x];
+				spriteSheets[x].tileSet = mapData.tilesets[x];
+			}	
+			complete = true;			
 		}
 	}
-	
-	// layer initialization
-	function initLayer(layerData, tilesetSheet, tilewidth, tileheight) {
-		for ( var y = 0; y < layerData.height; y++) {
-			for ( var x = 0; x < layerData.width; x++) {
-				// create a new Bitmap for each cell
-				var current = bitmapTiles.push(new createjs.BitmapAnimation(tilesetSheet)) - 1;
-				// layer data has single dimension array
-				var idx = x + y * layerData.width;
-				// tilemap data uses 1 as first value, EaselJS uses 0 (sub 1 to load correct tile)
-				bitmapTiles[current].gotoAndStop(layerData.data[idx] - 1);
-				// isometrix tile positioning based on X Y order from Tiled
-				bitmapTiles[current].x = x * tilewidth;
-				bitmapTiles[current].y = y * tileheight;
-				// add bitmap to stage
-				stage.addChild(bitmapTiles[current]);
+
+	function initLayer( spriteSheets ) {
+		for( var y = 0; y < ; y++ ){
+			for( var x = 0; x < layerData.width; x++ ){
+				
 			}
 		}
-	}
 }

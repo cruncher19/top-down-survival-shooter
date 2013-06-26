@@ -53,7 +53,7 @@
          "name":"wall",
          "properties":
             {
-             "wall":""
+             "wall":"1"
             },
          "spacing":0,
          "tileheight":32,
