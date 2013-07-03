@@ -6,6 +6,7 @@ var mapTiles;
 var playerSprite;
 var player;
 var playerSpeed = 150;
+var dm;
 
 //keycodes:
 var up = 38;
@@ -47,10 +48,10 @@ var pressedKeys;
 
 	// adding each asset to an array to be used later
 	function handleFileLoad(event) {
-    	assets[event.item.id] = event.result;
+        assets[event.item.id] = event.result;
 	}
 	function handleComplete(event) {
-		mapTiles = loadMap(assets["houseInterior"], assets["mapJson2"], stage);
+		mapTiles = loadMap(assets["mapJson2"], dm, stage);
 
 		playerSprite = new createjs.SpriteSheet({
 			images: [assets["maleSprite"]],
@@ -90,29 +91,33 @@ var pressedKeys;
 		dm.setItemPos( 'player', 100, 100 );
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', handleTick);
-    	window.addEventListener('keydown', handleKeyDown);
-    	window.addEventListener('keyup', handleKeyUp);
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
 	}
 })()
 
 function handleTick(event){
 	if( player.walk ) {
-		if( pressedKeys.length == 0 ) {
+        if( pressedKeys.length === 0 ) {
 			player.stopWalking();
 		} else {
-		    pressedKeys.forEach(function( element, index, array ) {
-		        switch(element) {
+            pressedKeys.forEach(function( element, index, array ) {
+                switch(element) {
 		            case up:
-		                player.moveUp(event.delta);
+                        dm.moveItemUp( "player", event.delta );
+		                //player.moveUp(event.delta);
 		                break;
 		            case down:
-		                player.moveDown(event.delta);
+		                dm.moveItemDown( "player", event.delta );
+                        //player.moveDown(event.delta);
 		                break;
 		            case left:
-		                player.moveLeft(event.delta);
+		                dm.moveItemLeft( "player", event.delta);
+                        //player.moveLeft(event.delta);
 		                break;
 		            case right:
-		                player.moveRight(event.delta);
+                        dm.moveItemRight( "player", event.delta);
+		                //player.moveRight(event.delta);
 		                break;
 		        }
 		    });

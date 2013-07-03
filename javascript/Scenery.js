@@ -37,13 +37,16 @@ Scenery.prototype.testPointCollision = function( x, y ) {
 		return true;
 }
 Scenery.prototype.testBoxCollision = function( x, y, width, height ) {
-	var p1 = [ { x: this.x, y: this.y },
+	var p1 = [ { x: this.bmp.x, y: this.bmp.y },
 		{ x: x, y: y }
 		];
-	var p2 = [ { x: (this.x + this.getWidth()), y: (this.y + this.getHeight()) },
+	var p2 = [ { x: (this.bmp.x + this.getWidth()), y: (this.bmp.y + this.getHeight()) },
 		{ x: (x + width), y: (y + height)}
 		];
-
+    //console.log("p1: {" + p1[0].x + ", " + p1[0].y +"}" + " p2: {" + p2[0].x + ", " + p2[0].y + "}");
+    //console.log("p1: {" + p1[1].x + ", " + p1[1].y +"}" + " p2: {" + p2[1].x + ", " + p2[1].y + "}");
+    if(!( (p2[0].y < p1[1].y) || (p1[0].y > p2[1].y) || (p2[0].x < p1[1].x) || (p1[0].x > p2[1].x) ))
+        console.log("Hit!");
 	return !( p2[0].y < p1[1].y || p1[0].y > p2[1].y || p2[0].x < p1[1].x || p1[0].x > p2[1].x );
 }	
 

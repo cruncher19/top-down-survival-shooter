@@ -14,6 +14,7 @@ function DisplayManager() {
 	this.displayItems = [];
 	this.collisionItems = [];
 	this.animatedItems = [];
+    this.count = 0;
 }
 
 // add a display item to the array of display items
@@ -24,8 +25,11 @@ function DisplayManager() {
 // BitmapAnimation doesn't contain width and height, but this method knows how to handle BitmapAnimations
 DisplayManager.prototype.addItem = function( displayItem, itemId ) {
 	this.displayItems[itemId] = displayItem;
-	if( displayItem.canCollide )
+	if( displayItem.canCollide ){
 		this.collisionItems[itemId] = displayItem;
+        console.log("hit item: " + itemId);
+        this.count += 1;
+	}
 	if( displayItem.isAnimated )
 		this.animatedItems[itemId] = displayItem;
 	return displayItem;
@@ -51,7 +55,7 @@ DisplayManager.prototype.setItemPos = function( itemId, x, y){
 	this.displayItems[itemId].setPos( x, y );
 }
 // NOTE: this is mainly used for testing
-//	 function uses the built in toString function of all objects in the display manager
+// function uses the built in toString function of all objects in the display manager
 DisplayManager.prototype.toString = function() {
 	var returnVal = "";
 	for( key in this.displayItems )
@@ -63,47 +67,65 @@ DisplayManager.prototype.toString = function() {
 // these methods check for collisions
 DisplayManager.prototype.moveItemUp = function( itemId, delta ) {
 	var item = this.collisionItems[itemId];
-	var itemRect = item.getBounds();
+	var itemRect = item.bmp.getBounds();
 	var newPos = item.bmp.y - (delta/1000 * item.moveSpeed);
 	var colliding = false;
 	for( key in this.collisionItems ) {
-		if( key.testBoxCollision( itemRect.x, newPos, itemRect.width, itemRect.height ) 
-			colliding = true;
-	}
+        //console.log("x: " + this.collisionItems[key].bmp.x + " y: " + this.collisionItems[key].bmp.y
+        //    + " width: " + this.collisionItems[key].bmp.getBounds().width + " height: " + this.collisionItems[key].bmp.getBounds().height);
+        if( key != itemId){
+            //colliding = this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height ) || colliding;
+            colliding = colliding || this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height );
+        }
+    }	
 	if( !colliding )
 		item.bmp.y = newPos;
 }
 DisplayManager.prototype.moveItemDown = function( itemId, delta) {
 	var item = this.collisionItems[itemId];
-	var itemRect = item.getBounds();
+	var itemRect = item.bmp.getBounds();
 	var newPos = item.bmp.y + (delta/1000 * item.moveSpeed);
 	var colliding = false;
-	for( key in this.collisionItems ) {
-		if( key.testBoxCollision( itemRect.x, newPos, itemRect.width, itemRect.height ) 
-			colliding = true;
-	}
+    for( key in this.collisionItems ) {
+        //console.log("x: " + this.collisionItems[key].bmp.x + " y: " + this.collisionItems[key].bmp.y
+        //    + " width: " + this.collisionItems[key].bmp.getBounds().width + " height: " + this.collisionItems[key].bmp.getBounds().height);
+        if( key != itemId){
+            //colliding = this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height ) || colliding;
+            colliding = colliding || this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height );
+        }
+    }
 	if( !colliding )
 		item.bmp.y = newPos;
 }
 DisplayManager.prototype.moveItemLeft = function( itemId, delta) {
 	var item = this.collisionItems[itemId];
-	var itemRect = item.getBounds();
+	var itemRect = item.bmp.getBounds();
 	var newPos = item.bmp.x - (delta/1000 * item.moveSpeed);
 	var colliding = false;
-	for( key in this.collisionItems ) {
-		if( key.testBoxCollision( newPos, itemRect.y, itemRect.width, itemRect.height )
-			colliding = true;
+    for( key in this.collisionItems ) {
+        //console.log("x: " + this.collisionItems[key].bmp.x + " y: " + this.collisionItems[key].bmp.y
+        //    + " width: " + this.collisionItems[key].bmp.getBounds().width + " height: " + this.collisionItems[key].bmp.getBounds().height);
+        if( key != itemId){
+            //colliding = this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height ) || colliding;
+            colliding = colliding || this.collisionItems[key].testBoxCollision( newPos, item.bmp.y, itemRect.width, itemRect.height );
+        }
+    }
 	if( !colliding )
 		item.bmp.x = newPos;
 }
 DisplayManager.prototype.moveItemRight = function( itemId, delta) {
 	var item = this.collisionItems[itemId];
-	var itemRect = item.getBounds();
+	var itemRect = item.bmp.getBounds();
 	var newPos = item.bmp.x + (delta/1000 * item.moveSpeed);
 	var colliding = false;
-	for( key in this.collisionItems ) {
-		if( key.testBoxCollision( newPos, itemRect.y, itemRect.width, itemRect.height )
-			colliding = true;
+    for( key in this.collisionItems ) {
+        //console.log("x: " + this.collisionItems[key].bmp.x + " y: " + this.collisionItems[key].bmp.y
+        //    + " width: " + this.collisionItems[key].bmp.getBounds().width + " height: " + this.collisionItems[key].bmp.getBounds().height);
+        if( key != itemId){
+            //colliding = this.collisionItems[key].testBoxCollision( item.bmp.x, newPos, itemRect.width, itemRect.height ) || colliding;
+            colliding = colliding || this.collisionItems[key].testBoxCollision( newPos, item.bmp.y, itemRect.width, itemRect.height );
+        }
+    }
 	if( !colliding )
 		item.bmp.x = newPos;
 }
