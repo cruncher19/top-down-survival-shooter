@@ -43,8 +43,18 @@ DisplayManager.prototype.getCollisionItem = function( itemId ) {
 	return this.collisionItems[itemId];
 }
 DisplayManager.prototype.updateFrames = function(){
-	for( key in this.animatedItems )
-		this.animatedItems[key].updateFrames();
+    if( this.hasOwnProperty( 'hitboxes' )){
+        for( key in this.animatedItems ) {
+            this.animatedItems[key].updateFrames();
+            if( this.hitboxes.hasOwnProperty( key ) ){
+                var newPt = this.animatedItems[key].bmp.localToLocal(this.animatedItems[key].bmp.x, this.animatedItems[key].bmp.y, this.hitboxes[key]);
+                this.hitboxes[key].x = newPt.x;
+                this.hitboxes[key].y = newPt.y;
+            }
+        }
+    } else
+	    for( key in this.animatedItems )
+	    	this.animatedItems[key].updateFrames();
 }
 DisplayManager.prototype.removeItem = function(itemId){
 	delete this.displayItems[itemId];
@@ -128,6 +138,26 @@ DisplayManager.prototype.moveItemRight = function( itemId, delta) {
     }
 	if( !colliding )
 		item.bmp.x = newPos;
+}
+
+// hitboxes of all hitable objects for debugging
+DisplayManager.prototype.drawHitboxes = function( stage ) {
+    this.hitboxes = [];
+    for( key in this.collisionItems ) {
+        var item = this.collisionItems[key];
+        var hitGraphics = new createjs.Graphics();
+        hitGraphics.setStrokeStyle(1);
+        hitGraphics.beginStroke("#1AFF00");
+        hitGraphics.moveTo( item.bmp.x, item.bmp.y );
+        hitGraphics.lineTo( item.bmp.x + item.bmp.getBounds().width, item.bmp.y );
+        hitGraphics.lineTo( item.bmp.x + item.bmp.getBounds().width, item.bmp.y + item.bmp.getBounds().height );
+        hitGraphics.lineTo( item.bmp.x, item.bmp.y + item.bmp.getBounds().height );
+        hitGraphics.lineTo( item.bmp.x, item.bmp.y );
+        
+        var hitShape = new createjs.Shape(hitGraphics);
+        this.hitboxes[key] = hitShape;
+        stage.addChild(hitShape);
+    }
 }
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISPLAY MANAGER END>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

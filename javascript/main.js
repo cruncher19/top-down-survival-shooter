@@ -84,11 +84,12 @@ var pressedKeys;
 			}
 		});
 		var temp = new createjs.BitmapAnimation(playerSprite);
-		temp.scaleX = temp.scaleY = 0.8;
+		//temp.scaleX = temp.scaleY = 0.8;
 		temp.gotoAndStop(0);
 		stage.addChild(temp);
 		player = dm.addItem( new Player( playerSpeed, temp, 5, 60 ), 'player' );
 		dm.setItemPos( 'player', 100, 100 );
+        //player.drawHitbox(stage);
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', handleTick);
         window.addEventListener('keydown', handleKeyDown);

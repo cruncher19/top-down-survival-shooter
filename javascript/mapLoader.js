@@ -40,7 +40,8 @@ function loadMap( mapData, displayManager, stage ) {
 				spriteSheets[x].tileSet = mapData.tilesets[x];
                 
 			}
-            initLayer( spriteSheets );		
+            initLayer( spriteSheets );
+            //dm.drawHitboxes(stage);
 		}
 	}
 
@@ -71,8 +72,6 @@ function loadMap( mapData, displayManager, stage ) {
                 displayManager.addItem( tempScenery, ('scenery' + idx) );
 			}
 		}
-        console.log("DM count: " + displayManager.count);
-        console.log(count);
         if( debug ){
             console.log("Collision Items: " + Object.keys(displayManager.collisionItems).length);
             count=0;
