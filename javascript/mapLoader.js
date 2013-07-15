@@ -68,7 +68,7 @@ function loadMap( mapData, displayManager, stage ) {
                     canCollide = true;
                     count += 1;
                 }
-                var tempScenery = new Scenery( current, canCollide, false );
+                var tempScenery = new DisplayObject( current, canCollide, false );
                 displayManager.addItem( tempScenery, ('scenery' + idx) );
 			}
 		}
